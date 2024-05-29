@@ -191,6 +191,9 @@ import taskStatuses from '@/common/enums/taskStatuses'
 import { validateFields } from '@/common/validator'
 import { useTaskCardDate } from '@/common/composables'
 import { cloneDeep } from 'lodash'
+import { useTasksStore } from '@/stores/tasks'
+
+const tasksStore = useTasksStore()
 
 // Функция для создания новых задач
 const createNewTask = () => ({
@@ -264,7 +267,7 @@ function closeDialog () {
 }
 
 function deleteTask () {
-  emits('deleteTask', task.value.id)
+  tasksStore.deleteTask(task.value.id)
   router.push('/')
 }
 
@@ -321,10 +324,10 @@ function submit () {
   }
   if (props.taskToEdit) {
     // Редактируемая задача
-    emits('editTask', task.value)
+    tasksStore.editTask(task.value)
   } else {
     // Новая задача
-    emits('addTask', task.value)
+    tasksStore.addTask(task.value)
   }
   // Переход на главную страницу
   router.push('/')
