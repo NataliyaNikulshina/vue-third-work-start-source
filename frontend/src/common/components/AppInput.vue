@@ -1,16 +1,15 @@
 <template>
   <div class="text-field">
-    <!--    Поле ввода текста-->
-    <textarea
+    <input
         :value="modelValue"
-        :name="props.name"
+        :type="type"
+        :name="name"
         class="text-field__input"
         :class="{'text-field__input--error': showError}"
-        :placeholder="props.placeholder"
-        :required="props.required"
-        @input="$emit('update:modelValue', $event.target.value)"
+        :placeholder="placeholder"
+        :required="required"
+        @input="emit('update:modelValue', $event.target.value)"
     />
-    <!--      Отображение ошибок валидации-->
     <span
         v-if="showError"
         class="text-field__text"
@@ -25,12 +24,16 @@ import { computed } from 'vue'
 
 const props = defineProps({
   modelValue: {
-    type: [String, Number],
-    required: true
+    type: String,
+    default: null
   },
   name: {
     type: String,
     required: true
+  },
+  type: {
+    type: String,
+    default: 'text'
   },
   placeholder: {
     type: String,
@@ -46,15 +49,25 @@ const props = defineProps({
   }
 })
 
-defineEmits(['update:modelValue'])
+const emit = defineEmits(['update:modelValue'])
+
+const input = computed({
+  get () {
+    return props.modelValue
+  },
+  set (value) {
+    emit('update:modelValue', value)
+  }
+})
 
 const showError = computed(() => {
-  return !props.modelValue && !!props.errorText;
+  return !!props.errorText
 })
 </script>
 
 <style lang="scss" scoped>
 @import "@/assets/scss/app.scss";
+
 .text-field {
   position: relative;
 
@@ -63,26 +76,19 @@ const showError = computed(() => {
 
     box-sizing: border-box;
     width: 100%;
-    height: 90px;
-    margin-top: 16px;
-    padding: 16px;
+    margin: 0;
+    padding: 12px 16px;
 
-    resize: none;
-    transition: border-color $animationSpeed;
-
-    color: $blue-gray-600;
-    border: 1px solid $gray-100;
+    color: $gray-900;
+    border: 1px solid $white-800;
     border-radius: 6px;
-    outline: none;
-
-    @include r-s14-h21;
-
-    &:focus {
-      border-color: $blue-600;
-    }
 
     &--error {
       border-color: $red-600;
+    }
+
+    &:focus {
+      border-color: $blue-600;
     }
   }
 
